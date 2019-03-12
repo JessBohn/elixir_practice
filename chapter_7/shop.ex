@@ -5,6 +5,10 @@ defmodule Shop do
       calculate(quantity, price)
    end
 
+   def calculate(:error, _), do: IO.puts("Quantity is not a number")
+   def calculate(_, :error), do: IO.puts("Price is not a number")
+   def calculate({quantity, _}, {price, _}), do: quantity * price
+
    def ask_number(message) do
       message <> "\n"
          |> IO.gets
