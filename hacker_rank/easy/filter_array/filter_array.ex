@@ -2,7 +2,7 @@
 # The output integers should be in the same sequence as they were in the input.
 # You need to write a function with the recommended method signature for the languages mentioned below
 
-defmodule Solution do
+defmodule FilterArray do
    def main(limit, data) do
       list = convert_list(data) # runs the defined function, receiving the already mapped lsit of integers
       for d <- list, d < limit, do: IO.puts d # for d less than list item, nothing; for item less than d, put d
@@ -18,4 +18,4 @@ end
 
 limit = IO.gets("") |> String.trim |> String.to_integer # gets the delimiter input, trims whitespace, converts to integer
 data = IO.read(:stdio, :all) # reads the entire rest of the input to be the list
-Solution.main(limit, data)
+FilterArray.main(limit, data)
