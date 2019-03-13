@@ -22,7 +22,7 @@ defmodule DungeonCrawl.CLI.BaseCommands do
          :error ->
             throw @invalid_option
          {option, _} ->
-            option -1
+            option - 1
       end
    end
 
@@ -61,7 +61,7 @@ defmodule DungeonCrawl.CLI.BaseCommands do
          |> display_options
          |> generate_question
          |> Shell.prompt
-         |> parse_answer!
+         |> parse_answer
          |> find_option_by_index(options)
       catch # if the sequence above fails, the program will continue with below
          {:error, message} ->
@@ -70,7 +70,7 @@ defmodule DungeonCrawl.CLI.BaseCommands do
       end
    end
 
-   def display_error(e) do
+   def display_error(message) do
       Shell.cmd("clear")
       Shell.error(message)
       Shell.prompt("Press Enter to continue.")
