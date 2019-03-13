@@ -1,11 +1,18 @@
+# USING WITH
+   # with clause is similar to how case statement works
+   # <- operator means the right side block will be executed first THEN matched to the left side block
+   # instructions inside the with are executed in order
+   # if an instruction doesn't have a match, Elixir will stop and return the unmatched value
+
 defmodule Shop do
    def checkout() do
-      try do
-         {quantity, _} = ask_number("Quantity?")
-         {price, _} = ask_number("Price?")
+      with {quantity, _} <- ask_number("Quantity?"),
+            {price, _} <- ask_number("Price?"),
          quantity * price
-      rescue
-         MatchError -> "It's not a number"
+      else
+         :error ->
+            IO.puts("It's not a number")
+      end
    end
 
    def calculate(:error, _), do: IO.puts("Quantity is not a number")

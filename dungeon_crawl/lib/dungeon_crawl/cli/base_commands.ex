@@ -1,7 +1,12 @@
+# USING WITH
+# ADVANTAGES
+   # flexibility - using with combined with pattern matching, we can check any value or pattern quickly & easily
+      #  w/o any data structure, concepts, or libraries
+# DISADVANTAGE
+   # doesn't combine with the pipe operator, breaking the beautiful structure of the happy-path
+
 defmodule DungeonCrawl.CLI.BaseCommands do
    alias Mix.Shell.IO, as: Shell
-
-   @invalid_option {:error, "Invalid option"}
 
    def display_options(options) do
       options
@@ -9,6 +14,7 @@ defmodule DungeonCrawl.CLI.BaseCommands do
       |> Enum.each(fn {option, index} ->
          Shell.info("#{index} - #{option}")
       end)
+
       options
    end
 
@@ -17,60 +23,33 @@ defmodule DungeonCrawl.CLI.BaseCommands do
       "Which one? [#{options}]\n"
    end
 
-   def parse_answer(answer) do
-      case Integer.parse(answer) do
-         :error ->
-            throw @invalid_option
-         {option, _} ->
-            option -1
-      end
-   end
+# parse_answer & find_option_by_index functions have been removed
+# not necessary when using with
 
-   def find_option_by_index(index, options) do
-      Enum.at(options, index) || throw @invalid_option
-   end
+   # updated to reflect with method
 
-   def ask_for_index(options) do
+   def ask_for_option(options) do
       answer =
          options
          |> display_options
          |> generate_question
          |> Shell.prompt
-         |> Integer.parse
 
-      case answer do
-         :error ->
-            display_invalid_option()
-            ask_for_index(options)
-         {option, _} ->
-            option - 1
+      # parse_answer & find_option_by_index have been implemented directly into the with to validate them
+      with {option, _} <- Integer.parse(answer), chosen when chosen != nil <- Enum.at(options, option - 1) do
+         chosen
+      else
+         :error -> retry(options)
+         nil -> retry(options)
       end
    end
 
-   def display_invalid_option do
-      Shell.cmd("clear")
-      Shell.error("Invalid option.")
-      Shell.prompt("Press Enter to try again.")
-      Shell.cmd("clear")
+   def retry(options) do
+      display_error("Invalid option")
+      ask_for_option(options)
    end
 
-   def ask_for_option(options) do
-      # 'try do' can be omitted, but it makes the happy path harder to see
-      try do
-         options
-         |> display_options
-         |> generate_question
-         |> Shell.prompt
-         |> parse_answer!
-         |> find_option_by_index(options)
-      catch # if the sequence above fails, the program will continue with below
-         {:error, message} ->
-            display_error(message)
-            ask_for_option(options)
-      end
-   end
-
-   def display_error(e) do
+   def display_error(message) do
       Shell.cmd("clear")
       Shell.error(message)
       Shell.prompt("Press Enter to continue.")
