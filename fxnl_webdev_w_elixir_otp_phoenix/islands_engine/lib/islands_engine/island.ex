@@ -43,4 +43,23 @@ defmodule IslandsEngine.Island do
             {:halt, {:error, :invalid_coordinate}} # returning {:halt, _} will stop the reduce_while when there is an invalid_coordinate
       end
    end
+
+   # checks to see if any of the coordinates for a new island overlap the coordinates for an existing island
+   def overlaps?(existing_island, new_island), do:
+      not MapSet.disjoint?(existing_island.coordinates, new_island.coordinates)
+
+   # tests all islands for a guessed coordinate
+   def guess(island, coordinate) do
+      case MapSet.member?(island.coordinates, coordinate) do
+         true ->
+            hit_coordinates = MapSet.put(island.hit_coordinates, coordinate)
+            {:hit, %{island | hit_coordinates: hit_coordinates}}
+         false -> :miss
+      end
+   end
+
+   # checks to see if an island is forested (all coordinates have been guessed correctly) by comparing the island's coordinates with the hit coordinates
+   def forested?(island), do: MapSet.equal?(island.coordinates, island.hit_coordinates)
+
+   def types(), do: [:atoll, :dot, :l_shape, :s_shape, :square]
 end
