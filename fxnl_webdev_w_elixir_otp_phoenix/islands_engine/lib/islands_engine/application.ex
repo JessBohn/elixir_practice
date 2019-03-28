@@ -11,13 +11,13 @@ defmodule IslandsEngine.Application do
       # Starts a worker by calling: IslandsEngine.Worker.start_link(arg)
       # {IslandsEngine.Worker, arg}
       {Registry, keys: :unique, name: Registry.Game},
-      IslandsEngine.GameSupervisor
+      IslandsEngine.GameDynamicSupervisor
     ]
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
+    # See https://hexdocs.pm/elixir/DynamicSupervisor.html
     # for other strategies and supported options
     :ets.new(:game_state, [:public, :named_table])
-    opts = [strategy: :one_for_one, name: IslandsEngine.Supervisor]
-    Supervisor.start_link(children, opts)
+    opts = [strategy: :one_for_one, name: IslandsEngine.DynamicSupervisor]
+    DynamicSupervisor.start_link(children, opts)
   end
 end
