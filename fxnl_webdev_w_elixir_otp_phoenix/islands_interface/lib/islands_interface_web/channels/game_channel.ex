@@ -42,6 +42,15 @@ defmodule IslandsInterfaceWeb.GameChannel do
       _ -> {:reply, :error, socket}
     end
   end
+  def handle_in("set_islands", player, socket) do
+    player = String.to_existing_atom(player)
+    case Game.set_islands(via(socket.topic), player) do
+      {:ok, board} ->
+        broadcast! socket, "player_set_islands", %{player: player}
+        {:reply, {:ok, %{board: board}}, socket}
+      _ -> {:reply, :error, socket}
+    end
+  end
   def handle_in("hello", payload, socket) do
     broadcast! socket, "said_hello", payload
     {:noreply, socket}
