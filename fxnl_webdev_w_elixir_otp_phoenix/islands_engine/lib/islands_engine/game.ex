@@ -110,7 +110,7 @@ defmodule IslandsEngine.Game do
   defp update_rules(state_data, rules), do: %{state_data | rules: rules}
 
   defp reply_success(state_data, reply) do
-    ets.insert(:game_state, {state_data.player1.name, state_data})
+    :ets.insert(:game_state, {state_data.player1.name, state_data})
     {:reply, reply, state_data, @timeout}
   end
 
