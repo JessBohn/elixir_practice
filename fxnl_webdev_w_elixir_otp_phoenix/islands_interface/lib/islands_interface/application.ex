@@ -20,7 +20,7 @@ defmodule IslandsInterface.Application do
     # See https://hexdocs.pm/elixir/DynamicSupervisor.html
     # for other strategies and supported options
     :ets.new(:game_state, [:public, :named_table])
-    opts = [strategy: :one_for_one, name: IslandsInterface.DynamicSupervisor]
+    opts = [strategy: :one_for_one, name: IslandsEngine.DynamicSupervisor]
     DynamicSupervisor.start_link(children, opts)
   end
 
