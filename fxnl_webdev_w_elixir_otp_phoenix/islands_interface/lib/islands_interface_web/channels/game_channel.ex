@@ -1,6 +1,6 @@
 defmodule IslandsInterfaceWeb.GameChannel do
   use IslandsInterfaceWeb, :channel
-  alias IslandsEngine.{Game, GameSupervisor}
+  alias IslandsEngine.{Game, GameDynamicSupervisor}
   alias IslandsInterfaceWeb.Presence
 
   def channel do
@@ -20,7 +20,7 @@ defmodule IslandsInterfaceWeb.GameChannel do
   end
 
   def handle_info({:after_join, screen_name}, socket) do
-    {:ok, _)} = Presence.track(socket, screen_name, %{online_at: inspect(System.system_time(:seconds))})
+    {:ok, _} = Presence.track(socket, screen_name, %{online_at: inspect(System.system_time(:seconds))})
     {:noreply, socket}
   end
 
@@ -31,7 +31,7 @@ defmodule IslandsInterfaceWeb.GameChannel do
 
   def handle_in("new_game", _payload, socket) do
     "game:" <> player = socket.topic
-    case GameSupervisor.start_game(player) do
+    case GameDynamicSupervisor.start_game(player) do
       {:ok, _pid} ->
         {:reply, :ok, socket}
       {:error, reason} ->
